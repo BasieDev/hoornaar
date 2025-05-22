@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ProgressBar from '../components/progressbar';
+import Loadingspinner from '../components/loadingspinner'; // Import the Loadingspinner component
 
 export default function Home() {
   const [progress, setProgress] = useState(0);
@@ -20,9 +21,9 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-col items-center justify-center space-y-4 mt-8 w-full px-4">
+      <div className="flex flex-col items-center justify-center w-full px-4" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+        <Loadingspinner />
         <ProgressBar percentage={progress} />
-        <span className="text-sm text-gray-600">{progress}%</span>
       </div>
     </>
   );
