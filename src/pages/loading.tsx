@@ -1,4 +1,4 @@
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '../components/loadingspinner';
 
 export default function Home() {
   return (
@@ -10,7 +10,10 @@ export default function Home() {
             </div>
         </header>
         <div className="flex flex-col items-center justify-center">
-
+            <LoadingSpinner />
+            <div className="text-2xl mt-4" style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif' }}>
+                Even geduld a.u.b.
+            </div>
         </div>
     </>
   );
