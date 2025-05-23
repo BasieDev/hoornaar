@@ -11,11 +11,11 @@ export default function Home() {
             <form className="mt-22" action="/api/login">
                 <div className="w-72 flex flex-col">
                     <label className="text-xl ml-4" style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif' }}>Gebruikersnaam</label>
-                    <input type="text" className="bg-[#F1DECD] h-12 rounded-4xl"/>
+                    <input type="text" className="bg-[#F1DECD] p-2 text-xl text-black h-12 rounded-4xl" style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif'}}/>
                 </div>
                 <div className="w-72 flex flex-col mt-8">
                     <label className="text-xl ml-4" style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif' }}>Wachtwoord</label>
-                    <input type="text" className="bg-[#F1DECD] h-12 rounded-4xl"/>
+                    <input type="password" className="bg-[#F1DECD] p-2 h-12 rounded-4xl text-xl text-black" style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif'}}/>
                 </div>
                 <div style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif' }} className="mx-auto ml-4">
                     Nog geen account? <a href="/register" className="text-[#F1DECD]" >Klik hier.</a>
