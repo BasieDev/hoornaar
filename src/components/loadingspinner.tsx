@@ -1,6 +1,6 @@
 export default function LoadingSpinner() {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center ">
       <div className="relative w-16 h-16">
         {[...Array(12)].map((_, i) => (
           <div
