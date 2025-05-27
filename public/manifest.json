@@ -1,0 +1,17 @@
+{
+  "name": "Hoornaar App",
+  "short_name": "Hoornaar",
+  "description": "A progressive web app for Hoornaar.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBD064",
+  "theme_color": "#FBD064",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
