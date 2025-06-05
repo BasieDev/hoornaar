@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import ProgressBar from '../components/progressbar';
-import LoadingSpinner from '../components/loadingspinner';
-import Loadingspinner from '../components/loadingspinner'; // Import the Loadingspinner component
+import LogoSvg from '@/components/logo';
+import Loadingspinner from '../components/loadingspinner'; 
 
-export default function Home() {
+export default function Loading() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -15,16 +15,14 @@ export default function Home() {
 
   return (
     <>
-      <header className="relative w-full h-auto">
-        <img src="/svg/bannermedium.svg" alt="Header Image" className="w-full h-auto" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <img src="/svg/Middlelogo.png" alt="Centered Logo" className="h-20 mt-21 w-auto" />
-        </div>
+      <header className="LogoSvg">
+        <LogoSvg />
       </header>
 
       <div className="flex flex-col items-center justify-center space-y-8 w-full px-4" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
         <Loadingspinner />
         <ProgressBar percentage={progress} />
+        <span className="text-sm text-[#FBD064] mt-5 ">{progress}%</span>
       </div>
     </>
   );
