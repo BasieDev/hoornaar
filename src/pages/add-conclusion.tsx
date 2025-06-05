@@ -45,17 +45,26 @@ export default function Add_Conclusion() {
       <Container>
         <SectionTitle title={title} />
         <div className="flex flex-col space-y-4 mt-6 w-full">
-          {/* Ophalen van ingevulde images en data */}
 
-          <div>
-            <p className="text-[21px] text-[#BE895B] mb-2">Een:</p>
-            <p className="text-[21px] text-[#BE895B] mb-2">Locatie:</p>
-            <p className="text-[21px] text-[#BE895B] mb-2">Datum:</p>
-            <p className="text-[21px] text-[#BE895B] mb-2">Plant:</p>
-            <p className="text-[21px] text-[#BE895B] mb-2">Weer:</p>
-            <p className="text-[21px] text-[#BE895B] mb-2">Beschrijving:</p>
+          <div className="flex items-center">
+            <p className="text-[21px] text-[#BE895B] w-[100px]">Locatie:</p>
+            <input
+              type="text"
+              name="locatie"
+              required
+              className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
+            />
           </div>
-          {/* Ophalen van ingevulde images en data */}
+
+          <div className="flex items-center">
+            <p className="text-[21px] text-[#BE895B] w-[100px]">Datum:</p>
+            <input
+              type="date"
+              name="datum"
+              required
+              className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
+            />
+          </div>
 
           <div className="flex flex-col space-y-4 mt-6 w-full relative">
             <img

@@ -71,19 +71,19 @@ export default function Profile() {
 
         </div>
 
-        <div className="mt-10 flex justify-between">
+        <div className="mt-4 flex justify-between">
           {(active === "signaleringen" || active === "gegevens") && (
-            <div className="flex space-x-4 w-full justify-center">
+            <div className="flex space-x-4 w-full justify-right ">
               <button
                 onClick={() => setActive("profiel")}
-                className="bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
+                className="bg-[#FBD064] hover:bg-[#A25714] text-white px-7 py-2 rounded-full transition"
               >
                 Terug
               </button>
 
               <button
                 onClick={() => setShowModal(true)}
-                className="bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
+                className="bg-[#FBD064] hover:bg-[#A25714] text-white px-7 py-2 rounded-full transition"
               >
                 Wijzig
               </button>
@@ -93,31 +93,66 @@ export default function Profile() {
       </Container>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg relative">
-            <h2 className="text-xl font-semibold mb-4 text-[#BE895B]">
+        <div className="fixed inset-0 bg-transparant bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-[#F0DFCD] rounded-2xl p-6 w-[350px] shadow-lg relative">
+
+            <h2 className="text-xl  mb-4 text-[#A25714] ">
               {active === "gegevens" ? "Gegevens wijzigen" : "Signaleringen wijzigen"}
             </h2>
-            <p className="text-sm text-gray-600 mb-4">Hier komt een formulier voor wijzigen...</p>
 
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              className="absolute top-3 right-3 text-[#FBD064] hover:text-[#FAC131]"
             >
               ✕
             </button>
+            <div className="flex items-center mb-2">
+              <p className="text-[18px] text-[#BE895B] w-[100px]">Bijnaam:</p>
+              <input
+                type="text"
+                name="new-nickname"
+                className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
+              />
+            </div>
 
-            <input
-              type="text"
-              placeholder={active === "gegevens" ? "Nieuwe voornaam" : "Nieuwe signalering"}
-              className="w-full border border-gray-300 rounded px-3 py-2 mb-4"
-            />
-            <button className="bg-[#BE895B] text-white px-4 py-2 rounded hover:bg-[#A25714]">
-              Opslaan
-            </button>
+            <div className="flex items-center mb-2">
+              <p className="text-[18px] text-[#BE895B] w-[100px]">E-mail:</p>
+              <input
+                type="text"
+                name="new-email"
+                className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
+              />
+            </div>
+
+            <div className="flex items-center mb-2">
+              <p className="text-[18px] text-[#BE895B] w-[100px]">Voornaam:</p>
+              <input
+                type="text"
+                name="new-firstname"
+                className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
+              />
+            </div>
+
+            <div className="flex items-center mb-2">
+              <p className="text-[18px] text-[#BE895B] w-[100px]">Achternaam:</p>
+              <input
+                type="text"
+                name="new-lastname"
+                className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
+              />
+            </div>
+            <div className="flex justify-end mt-4">
+              <button className="bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition">
+                Opslaan
+              </button>
+            </div>
           </div>
+
         </div>
-      )}
-    </div>
+
+
+      )
+      }
+    </div >
   );
 }

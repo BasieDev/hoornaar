@@ -236,7 +236,8 @@ export default function Add() {
 
           <button
             type="submit"
-            className="mt-4 mb-4 self-start bg-[#BE895B] text-white px-6 py-2 rounded-full"
+            className="my-4 self-start bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
+            
           >
             Versturen
           </button>
