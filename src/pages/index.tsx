@@ -2,6 +2,8 @@ import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
 import LogoSvg from "@/components/logo";
+import MapFilter from "@/components/mapfilter";
+import Containermapfilter from "@/components/containermapfilter";
 
 
 const geistSans = Geist({
@@ -20,8 +22,15 @@ export default function Home() {
     <div className="home pb-[80px]">
       <Navbar />
       <header className="LogoSvg">
-                  <LogoSvg />
-              </header>
+        <LogoSvg />
+      </header>
+      <Containermapfilter>
+
+        <div className="">
+          <MapFilter />
+        </div>
+      </Containermapfilter>
+
     </div>
   );
 }

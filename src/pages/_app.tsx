@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     document.body.classList.remove('theme-brown', 'theme-white')
 
-    const brownPages = ['/login', '/register', '/'
+    const brownPages = ['/login', '/register'
     ] 
     if (brownPages.includes(router.pathname)) {
       document.body.classList.add('theme-brown')
