@@ -71,11 +71,22 @@ export default function Profile() {
 
         <div>
           {active === "profiel" && (
-            <p className="text-[#BE895B]">
-              Welkom op jouw profielpagina. <br />
-              Hier kan je je gegevens inzien en wijzigen, maar ook je gemaakte signaleringen bekijken en wijzigen.
-            </p>
+            <div>
+              <p className="text-[#BE895B]">
+                Welkom op jouw profielpagina. <br />
+                Hier kan je je gegevens inzien en wijzigen, maar ook je gemaakte signaleringen bekijken en wijzigen.
+              </p>
+
+              <div className="flex space-x-4 w-full justify-end mt-4">
+                <button
+                  className="bg-[#FBD064] hover:bg-[#A25714] text-white px-7 py-2 my-4 rounded-full transition"
+                >
+                  Log uit
+                </button>
+              </div>
+            </div>
           )}
+
 
           {active === "gegevens" && (
             <div className="flex flex-col space-y-1 w-full">

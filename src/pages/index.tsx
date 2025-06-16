@@ -24,12 +24,7 @@ export default function Home() {
       <header className="LogoSvg">
         <LogoSvg />
       </header>
-      <Containermapfilter>
-
-        <div className="">
-          <MapFilter />
-        </div>
-      </Containermapfilter>
+      
 
     </div>
   );
