@@ -37,7 +37,7 @@ export default function Profile() {
   }, [showModal]);
 
   return (
-    <div className="home pb-[80px] min-h-screen flex flex-col relative">
+    <div className="profile pb-[80px] min-h-screen flex flex-col relative">
       <Navbar />
       <header className="LogoSvg">
         <LogoSvg />
