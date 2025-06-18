@@ -37,7 +37,7 @@ export default function Register() {
                 body: JSON.stringify(form)
             });
 
-            const text = await res.text(); // read body once
+            const text = await res.text();
 
             if (!res.ok) {
                 setError("Registratie mislukt.");
