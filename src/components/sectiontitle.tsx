@@ -2,7 +2,7 @@ export default function SectionTitle({ title }) {
   return (
     <div className="relative w-fit mt-18 ">
       <div className="flex items-center justify-center gap-2">
-        <h2 className="text-[#F5B800] text-2xl ">{title}</h2>
+        <h2 className="text-[#F5B800] text-[26px]">{title}</h2>
         <img
           src="/icons/bee.svg"
           alt="Bij icoon"

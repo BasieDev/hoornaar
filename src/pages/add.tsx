@@ -56,35 +56,43 @@ export default function Add() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  e.preventDefault();
 
-    if (!selectedOption || !formData.get("locatie")) {
-      alert("Vul minimaal het type en de locatie in.");
-      return;
+  const formData = new FormData(e.currentTarget);
+
+  if (!selectedOption || !formData.get("locatie")) {
+    alert("Vul minimaal het type en de locatie in.");
+    return;
+  }
+
+  formData.append("wat", selectedOption);
+
+  images.forEach((img, i) => {
+    formData.append(`images[]`, img);
+  });
+
+  try {
+    const response = await fetch("/api/signaleringen", {  
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Netwerkfout bij het versturen");
     }
 
-    formData.append("wat", selectedOption);
-    images.forEach((img, i) => formData.append(`image_${i}`, img));
+    router.push("/add-conclusion");
 
-    console.log("Formulierdata:", Object.fromEntries(formData));
+    e.currentTarget.reset();
+    setSelectedOption("");
+    setImages([]);
+    setCurrentImage(0);
 
-    try {
-      await fetch("/api/???", {
-        method: "POST",
-        body: formData,
-      });
-
-      router.push("/add-conclusion");
-      e.currentTarget.reset();
-      setSelectedOption("");
-      setImages([]);
-      setCurrentImage(0);
-    } catch (err) {
-      alert("Er ging iets mis bij het versturen.");
-      console.error(err);
-    }
-  };
+  } catch (err) {
+    alert("Er ging iets mis bij het versturen.");
+    console.error(err);
+  }
+};
 
   return (
     <div className="home pb-[80px]">
@@ -161,13 +169,13 @@ export default function Add() {
             <p className="text-[21px] text-[#BE895B]">Beschrijving:</p>
             <textarea
               name="beschrijving"
-              required minLength={20}
+              required minLength={20} maxLength={200}
               className="bg-[#EFEEEC] text-[#BE895B] rounded-2xl px-2 py-1 w-full"
               rows={4}
             />
           </div>
 
-          <div className="flex flex-col space-y-4 mt-6 w-full relative">
+          <div className="flex flex-col space-y-2 mt-6 w-full relative">
             <img
               src="/icons/bee.svg"
               alt="Bij icoon"
@@ -176,7 +184,7 @@ export default function Add() {
             <p className="text-[21px] text-[#BE895B]">Voeg foto's toe:</p>
 
             <div
-              className="mt-2 w-full h-[250px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center cursor-pointer  relative overflow-hidden"
+              className=" w-full h-[250px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center cursor-pointer  relative overflow-hidden"
               onClick={() => fileInputRef.current?.click()}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
@@ -236,7 +244,7 @@ export default function Add() {
 
           <button
             type="submit"
-            className="my-4 self-start bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
+            className="my-4 self-end bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
             
           >
             Versturen

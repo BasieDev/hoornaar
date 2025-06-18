@@ -1,5 +1,9 @@
 import Navbar from "@/components/navbar";
 import LogoSvg from "@/components/logo";
+import MapFilter from "@/components/mapfilter";
+import Containermapfilter from "@/components/containermapfilter";
+import MapLegenda from "@/components/maplegenda";
+
 import OpenStreetMap from '../components/OpenStreetMap';
 import { useEffect } from "react";
 
@@ -24,6 +28,16 @@ export default function Map() {
                     <OpenStreetMap />
                 </div>
             </div>
+            <Containermapfilter>
+
+                <div className="">
+                    <MapFilter />
+                </div>
+
+            </Containermapfilter>
+            <MapLegenda />
+
         </div>
+
     );
 }
