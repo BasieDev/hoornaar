@@ -14,12 +14,12 @@ export default function Register() {
     const [success, setSuccess] = useState(false);
     const [debug, setDebug] = useState<any>(null);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/login";
-        }
-    }, []);
+    // useEffect(() => {
+    //     const token = localStorage.getItem("token");
+    //     if (!token) {
+    //         window.location.href = "/login";
+    //     }
+    // }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
