@@ -8,12 +8,12 @@ import OpenStreetMap from '../components/OpenStreetMap';
 import { useEffect } from "react";
 
 export default function Map() {
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/login";
-        }
-    }, []);
+    // useEffect(() => {
+    //     const token = localStorage.getItem("token");
+    //     if (!token) {
+    //         window.location.href = "/login";
+    //     }
+    // }, []);
 
     return (
         <div className="home min-h-screen h-screen flex flex-col">
