@@ -44,6 +44,7 @@ export default function Home() {
         <LogoSvg />
       </header>
       <Container>
+
         <SectionTitle title={title} />
         <p className="text-[#BE895B] text-xl">De bijen worden in Nederland bedreigd door verschillende factoren. Toch zijn ze enorm belangrijk voor ons ecosysteem. De Bijenspotter is de plek om jouw steentje bij te dragen.  </p>
         <p className="text-[#F5B800] my-2 text-3xl">Nieuwste signaleringen  </p>

@@ -28,9 +28,7 @@ export default function Map() {
             </div>
             <Containermapfilter>
 
-                <div className="">
                     <MapFilter />
-                </div>
 
             </Containermapfilter>
             <MapLegenda />
