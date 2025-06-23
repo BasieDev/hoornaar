@@ -16,6 +16,12 @@ export default function Profile() {
   const [newType, setNewType] = useState("");
   const options = ["Bij", "Hoornaar", "Bijenkorf", "Wespennest"];
 
+  useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/login";
+        }
+    }, []);
 
   const title =
     active === "profiel"

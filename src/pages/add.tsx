@@ -19,6 +19,13 @@ export default function Add() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/login";
+        }
+    }, []);
+
+  useEffect(() => {
     return () => {
       images.forEach((img) => URL.revokeObjectURL(img));
     };

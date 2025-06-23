@@ -121,13 +121,13 @@ export default function Register() {
                             Registreer
                         </button>
                     </div>
-                    {/* {error && <div className="text-red-600 mt-4">{error}</div>}
+                    {error && <div className="text-red-600 mt-4">{error}</div>}
                     {success && <div className="text-green-600 mt-4">Registratie gelukt!</div>}
                     {debug && (
                         <pre className="text-xs mt-4 bg-gray-100 p-2 rounded text-left overflow-x-auto" style={{ maxWidth: 400 }}>
 {JSON.stringify(debug, null, 2)}
                         </pre>
-                    )} */}
+                    )}
                 </form>
             </div>
         </div>
