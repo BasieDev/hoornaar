@@ -23,7 +23,7 @@ export default function OpenStreetMap() {
           maxZoom: 19,
         }).addTo(mapInstanceRef.current);
 
-        fetch('https://localhost:7234/api/sighting/all?page=1&pageSize=100')
+        fetch('https://localhost:7235/api/sighting/all?page=1&pageSize=100')
           .then(async (res) => {
             // Defensive: check for non-OK and empty responses
             if (!res.ok) throw new Error('Network response was not ok');

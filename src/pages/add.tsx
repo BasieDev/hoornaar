@@ -87,7 +87,7 @@ export default function Add() {
           const token = localStorage.getItem("token");
           console.log("Payload:", payload);
           console.log(token)
-          const response = await fetch("https://localhost:7234/api/sighting/create", {
+          const response = await fetch("https://localhost:7235/api/sighting/create", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
