@@ -5,26 +5,76 @@ import 'leaflet/dist/leaflet.css';
 
 export default function OpenStreetMap() {
   const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
 
   useEffect(() => {
-    let map: any = null;
     if (typeof window !== 'undefined') {
       import('leaflet').then((L) => {
         if (!mapRef.current) return;
-        // Remove any existing map instance from the div
-        if (mapRef.current && mapRef.current.innerHTML !== '') {
-          mapRef.current.innerHTML = '';
+
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
         }
-        map = L.map(mapRef.current).setView([51.505, -0.09], 13);
+
+        mapInstanceRef.current = L.map(mapRef.current).setView([52.2, 5.3], 7);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors',
           maxZoom: 19,
-        }).addTo(map);
+        }).addTo(mapInstanceRef.current);
+
+        fetch('https://localhost:7234/api/sighting/all?page=1&pageSize=100')
+          .then(async (res) => {
+            // Defensive: check for non-OK and empty responses
+            if (!res.ok) throw new Error('Network response was not ok');
+            const text = await res.text();
+            if (!text) throw new Error('Empty response');
+            try {
+              return JSON.parse(text);
+            } catch (e) {
+              throw new Error('Invalid JSON');
+            }
+          })
+          .then((data) => {
+            const sightings = Array.isArray(data?.sighting) ? data.sighting : [];
+            sightings.forEach((sighting: any) => {
+              const lat = typeof sighting.latitude === 'number' ? sighting.latitude : null;
+              const lng = typeof sighting.longitude === 'number' ? sighting.longitude : null;
+              if (lat !== null && lng !== null) {
+                L.circleMarker([lat, lng], {
+                  color: 'orange',
+                  fillColor: 'orange',
+                  fillOpacity: 0.75,
+                  radius: 8,
+                })
+                  .addTo(mapInstanceRef.current)
+                  .bindPopup(`
+                    <div style="min-width:120px;text-align:center;">
+                      <strong>${
+                        sighting.type === 0 ? 'Bij' :
+                        sighting.type === 1 ? 'Hoornaar' :
+                        sighting.type === 2 ? 'bijenkorf' :
+                        sighting.type === 3 ? 'Wespennest' :
+                        'Onbekend'
+                      }</strong><br/>
+                      <span>${sighting.place || 'Unknown location'}</span><br/>
+                      <a href="/login">Detail</a><br/>
+                      <small>Spotted on: ${sighting.date ? sighting.date.split('T')[0] : 'Unknown date'}</small>
+                    </div>
+                  `);
+              }
+            });
+          })
+          .catch((err) => {
+            console.error('Failed to load sightings', err);
+          });
       });
     }
+
     return () => {
-      if (map) {
-        map.remove();
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
       }
     };
   }, []);

@@ -4,6 +4,7 @@ import LogoSvg from "@/components/logo";
 import SectionTitle from "@/components/sectiontitle";
 import Container from "@/components/container";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 
 export default function Profile() {
@@ -15,6 +16,7 @@ export default function Profile() {
 
   const [newType, setNewType] = useState("");
   const options = ["Bij", "Hoornaar", "Bijenkorf", "Wespennest"];
+  const router = useRouter();
 
   useEffect(() => {
         const token = localStorage.getItem("token");
@@ -84,7 +86,7 @@ export default function Profile() {
               </p>
 
               <div className="flex space-x-4 w-full justify-end mt-4">
-                <button
+                <button onClick={() => router.push("logout")}
                   className="bg-[#FBD064] hover:bg-[#A25714] text-white px-7 py-2 my-4 rounded-full transition"
                 >
                   Log uit

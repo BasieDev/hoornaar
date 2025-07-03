@@ -1,8 +1,17 @@
 import { useState } from "react";
 import LogoSvg from "@/components/logo";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Login() {
+
+  useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            window.location.href = "/";
+        }
+    }, []);
+  
   const [form, setForm] = useState({
     email: "",
     password: ""
