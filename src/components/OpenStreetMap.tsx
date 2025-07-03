@@ -53,7 +53,7 @@ export default function OpenStreetMap() {
                       <strong>${
                         sighting.type === 0 ? 'Bij' :
                         sighting.type === 1 ? 'Hoornaar' :
-                        sighting.type === 2 ? 'bijenkorf' :
+                        sighting.type === 2 ? 'Bijenkorf' :
                         sighting.type === 3 ? 'Wespennest' :
                         'Onbekend'
                       }</strong><br/>
