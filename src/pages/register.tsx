@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LogoSvg from "@/components/logo";
 import { useEffect } from "react";
+import Router from "next/router";
 
 export default function Register() {
     const [form, setForm] = useState({
@@ -31,7 +32,7 @@ export default function Register() {
         setSuccess(false);
         setDebug(null);
         try {
-            const res = await fetch("http://localhost:5024/api/auth/register", {
+            const res = await fetch("https://localhost:7235/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form)
@@ -47,6 +48,7 @@ export default function Register() {
 
             localStorage.setItem("token", text);
             console.log("Token opgeslagen:", text);
+            Router.push("/");
             setSuccess(true);
             setDebug({ status: res.status, statusText: res.statusText, body: text });
 

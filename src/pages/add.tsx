@@ -162,7 +162,6 @@ export default function Add() {
           setImages([]);
           setCurrentImage(0);
 
-          // Redirect to add-conclusion/{id} if id is present in responseJson
           if (responseJson && responseJson.id) {
             router.push(`/add-conclusion/${responseJson.id}`);
           }
