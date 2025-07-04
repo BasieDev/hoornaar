@@ -58,7 +58,7 @@ export default function OpenStreetMap() {
                         'Onbekend'
                       }</strong><br/>
                       <span>${sighting.place || 'Unknown location'}</span><br/>
-                      <a href="/detail/${sighting.id}">Detail</a><br/>
+                      <a href="/add-conclusion/${sighting.id}">Detail</a><br/>
                       <small>Spotted on: ${sighting.date ? sighting.date.split('T')[0] : 'Unknown date'}</small>
                     </div>
                   `);
