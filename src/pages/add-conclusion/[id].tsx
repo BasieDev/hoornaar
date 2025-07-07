@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const weatherCodeDescriptions: Record<number, string> = {
   0: "Zonnig",
@@ -80,6 +80,21 @@ export default function AddConclusionPage() {
   const [error, setError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [currentImage, setCurrentImage] = useState(0);
+  // Touch handling for mobile swipe
+  const touchStartXRef = useRef<number>(0);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.changedTouches[0].screenX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchStartX = touchStartXRef.current;
+    if (touchEndX < touchStartX - 50 && currentImage < imageUrls.length - 1) {
+      setCurrentImage(currentImage + 1);
+    }
+    if (touchEndX > touchStartX + 50 && currentImage > 0) {
+      setCurrentImage(currentImage - 1);
+    }
+  };
   let title = sighting ? `Signalering #${sighting.id}` : '';
 
   useEffect(() => {
@@ -163,19 +178,47 @@ export default function AddConclusionPage() {
                 className="w-6 h-5 absolute left-[-16px] top-[-12px]"
               />
               <p className="text-[21px] text-[#BE895B]">Foto's:</p>
-              <div className="w-full min-h-[120px] bg-[#E3D8D8] rounded-2xl flex flex-wrap items-center justify-center gap-2 p-2 relative overflow-x-auto">
+              <div
+                className="w-full h-[250px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center relative overflow-hidden"
+                onTouchStart={imageUrls.length > 0 ? handleTouchStart : undefined}
+                onTouchEnd={imageUrls.length > 0 ? handleTouchEnd : undefined}
+              >
                 {imageUrls.length === 0 ? (
                   <span className="text-[#BE895B] text-center">Geen foto's gevonden</span>
                 ) : (
-                  imageUrls.map((url, i) => (
-                    <div key={url} className="w-[120px] h-[120px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center overflow-hidden">
-                      <img
-                        src={url}
-                        alt={`Foto ${i + 1}`}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                  ))
+                  <>
+                    <img
+                      src={imageUrls[currentImage]}
+                      alt={`Foto ${currentImage + 1}`}
+                      className="object-cover w-full h-full"
+                    />
+                    {imageUrls.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#BE895B] rounded-full px-2 py-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (currentImage < imageUrls.length - 1) setCurrentImage(currentImage + 1);
+                          }}
+                          tabIndex={-1}
+                        >
+                          <span className="text-[#A25714] text-3xl">&#10132;</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-[#BE895B] rounded-full px-2 py-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (currentImage > 0) setCurrentImage(currentImage - 1);
+                          }}
+                          tabIndex={-1}
+                        >
+                          <span className="text-[#A25714] text-3xl inline-block transform -scale-x-100">&#10132;</span>
+                        </button>
+                      </>
+                    )}
+                  </>
                 )}
               </div>
             </div>

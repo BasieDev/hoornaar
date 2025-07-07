@@ -1,18 +1,35 @@
-import { useState, useEffect } from "react";
 
-type EditSightingData = {
-  username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-};
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
 import LogoSvg from "@/components/logo";
 import SectionTitle from "@/components/sectiontitle";
 import Container from "@/components/container";
-import { useRouter } from "next/navigation";
+
 
 export default function Profile() {
+  const [currentImageIndexes, setCurrentImageIndexes] = useState<{ [id: number]: number }>({});
+  const touchStartXRef = useRef<{ [id: number]: number }>({});
+  const getCurrentImageIndex = (sigId: number) => currentImageIndexes[sigId] || 0;
+  const setCurrentImageIndex = (sigId: number, idx: number) => {
+    setCurrentImageIndexes((prev) => ({ ...prev, [sigId]: idx }));
+  };
+  const handleTouchStart = (sigId: number, e: React.TouchEvent) => {
+    touchStartXRef.current[sigId] = e.changedTouches[0].screenX;
+  };
+  const handleTouchEnd = (sigId: number, imagesLength: number, e: React.TouchEvent) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchStartX = touchStartXRef.current[sigId] || 0;
+    const currentIdx = getCurrentImageIndex(sigId);
+    if (touchEndX < touchStartX - 50 && currentIdx < imagesLength - 1) {
+      setCurrentImageIndex(sigId, currentIdx + 1);
+    }
+    if (touchEndX > touchStartX + 50 && currentIdx > 0) {
+      setCurrentImageIndex(sigId, currentIdx - 1);
+    }
+  };
+
+
   const [editSightingModal, setEditSightingModal] = useState<any>(null);
   const [editSightingData, setEditSightingData] = useState({
     description: "",
@@ -100,7 +117,6 @@ export default function Profile() {
     setSaveSightingError("");
     const token = localStorage.getItem("token");
     try {
-      // Convert date to ISO string if needed
       let dateToSend = editSightingData.date;
       if (dateToSend && !dateToSend.endsWith("Z") && dateToSend.length <= 16) {
         dateToSend = new Date(dateToSend).toISOString();
@@ -139,8 +155,6 @@ export default function Profile() {
     }
   };
   const [signaleringen, setSignaleringen] = useState<any[]>([]);
-  const [imageUrls, setImageUrls] = useState([]);
-  const [currentImage, setCurrentImage] = useState(0);
   const [active, setActive] = useState("profiel");
   const [showModal, setShowModal] = useState(false);
 
@@ -430,16 +444,44 @@ export default function Profile() {
                       {images.length > 0 && (
                         <div className="flex flex-col space-y-2 mt-10 w-full relative">
                           <p className="text-[21px] text-[#BE895B]">Bekijk jouw foto's:</p>
-                          <div className="flex flex-wrap gap-2 w-full">
-                            {images.map((img: any, i: number) => (
-                              <div key={img.url} className="w-[120px] h-[120px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center overflow-hidden">
-                                <img
-                                  src={img.url}
-                                  alt={`Foto ${i + 1}`}
-                                  className="object-cover w-full h-full"
-                                />
-                              </div>
-                            ))}
+                          <div
+                            className="w-full h-[250px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center relative overflow-hidden"
+                            onTouchStart={e => handleTouchStart(sig.id, e)}
+                            onTouchEnd={e => handleTouchEnd(sig.id, images.length, e)}
+                          >
+                            <img
+                              src={images[getCurrentImageIndex(sig.id)]?.url}
+                              alt={`Foto ${getCurrentImageIndex(sig.id) + 1}`}
+                              className="object-cover w-full h-full"
+                            />
+                            {images.length > 1 && (
+                              <>
+                                <button
+                                  type="button"
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#BE895B] rounded-full px-2 py-1"
+                                  onClick={e => {
+                                    e.stopPropagation();
+                                    const idx = getCurrentImageIndex(sig.id);
+                                    if (idx < images.length - 1) setCurrentImageIndex(sig.id, idx + 1);
+                                  }}
+                                  tabIndex={-1}
+                                >
+                                  <span className="text-[#A25714] text-3xl">&#10132;</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-[#BE895B] rounded-full px-2 py-1"
+                                  onClick={e => {
+                                    e.stopPropagation();
+                                    const idx = getCurrentImageIndex(sig.id);
+                                    if (idx > 0) setCurrentImageIndex(sig.id, idx - 1);
+                                  }}
+                                  tabIndex={-1}
+                                >
+                                  <span className="text-[#A25714] text-3xl inline-block transform -scale-x-100">&#10132;</span>
+                                </button>
+                              </>
+                            )}
                           </div>
                         </div>
                       )}
@@ -721,3 +763,5 @@ export default function Profile() {
     </div >
   );
 }
+
+

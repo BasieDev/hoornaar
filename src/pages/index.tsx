@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
@@ -72,8 +72,31 @@ export default function Home() {
         console.error("Fout bij ophalen van signaleringen:", err);
       });
   }, []);
-  const [currentImage, setCurrentImage] = useState(0);
-  const [activeSignalering, setActiveSignalering] = useState(0);
+  // Track the current image index for each signalering
+  const [currentImageIndexes, setCurrentImageIndexes] = useState<{ [id: number]: number }>({});
+
+  // Helper to get current image index for a signalering
+  const getCurrentImageIndex = (sigId: number) => currentImageIndexes[sigId] || 0;
+  const setCurrentImageIndex = (sigId: number, idx: number) => {
+    setCurrentImageIndexes((prev) => ({ ...prev, [sigId]: idx }));
+  };
+
+  // Touch handling for mobile swipe
+  const touchStartXRef = useRef<{ [id: number]: number }>({});
+  const handleTouchStart = (sigId: number, e: React.TouchEvent) => {
+    touchStartXRef.current[sigId] = e.changedTouches[0].screenX;
+  };
+  const handleTouchEnd = (sigId: number, imagesLength: number, e: React.TouchEvent) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchStartX = touchStartXRef.current[sigId] || 0;
+    const currentIdx = getCurrentImageIndex(sigId);
+    if (touchEndX < touchStartX - 50 && currentIdx < imagesLength - 1) {
+      setCurrentImageIndex(sigId, currentIdx + 1);
+    }
+    if (touchEndX > touchStartX + 50 && currentIdx > 0) {
+      setCurrentImageIndex(sigId, currentIdx - 1);
+    }
+  };
 
   useEffect(() => {
     if (showModal) {
@@ -138,21 +161,47 @@ export default function Home() {
               </div>
               <div className="flex flex-col space-y-2 mt-10 w-full relative">
                 <p className="text-[21px] text-[#BE895B]">Foto's:</p>
-                <div className="w-full h-[250px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                <div
+                  className="w-full h-[250px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center relative overflow-hidden"
+                  onTouchStart={sig.images && sig.images.length > 0 ? (e) => handleTouchStart(sig.id, e) : undefined}
+                  onTouchEnd={sig.images && sig.images.length > 0 ? (e) => handleTouchEnd(sig.id, sig.images.length, e) : undefined}
+                >
                   {sig.images && sig.images.length > 0 ? (
-                    <div className="flex w-full h-full overflow-x-auto gap-2">
-                      {[
-                        ...sig.images.filter((img: { thumbnail?: boolean }) => img.thumbnail),
-                        ...sig.images.filter((img: { thumbnail?: boolean }) => !img.thumbnail)
-                      ].map((img: { url: string; thumbnail?: boolean }, imgIdx: number) => (
-                        <img
-                          key={img.url + imgIdx}
-                          src={img.url}
-                          alt={`Foto ${imgIdx + 1}`}
-                          className="object-cover h-full max-w-[250px] rounded-lg"
-                        />
-                      ))}
-                    </div>
+                    <>
+                      <img
+                        src={sig.images[getCurrentImageIndex(sig.id)]?.url}
+                        alt={`Foto ${getCurrentImageIndex(sig.id) + 1}`}
+                        className="object-cover w-full h-full"
+                      />
+                      {sig.images.length > 1 && (
+                        <>
+                          <button
+                            type="button"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#BE895B] rounded-full px-2 py-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const idx = getCurrentImageIndex(sig.id);
+                              if (idx < sig.images.length - 1) setCurrentImageIndex(sig.id, idx + 1);
+                            }}
+                            tabIndex={-1}
+                          >
+                            <span className="text-[#A25714] text-3xl">&#10132;</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-[#BE895B] rounded-full px-2 py-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const idx = getCurrentImageIndex(sig.id);
+                              if (idx > 0) setCurrentImageIndex(sig.id, idx - 1);
+                            }}
+                            tabIndex={-1}
+                          >
+                            <span className="text-[#A25714] text-3xl inline-block transform -scale-x-100">&#10132;</span>
+                          </button>
+                        </>
+                      )}
+                    </>
                   ) : (
                     <span className="text-[#BE895B] text-center">Geen foto's gevonden</span>
                   )}
