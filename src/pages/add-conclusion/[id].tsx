@@ -167,14 +167,14 @@ export default function AddConclusionPage() {
                 {imageUrls.length === 0 ? (
                   <span className="text-[#BE895B] text-center">Geen foto's gevonden</span>
                 ) : (
-                  imageUrls.map((url, idx) => (
-                    <img
-                      key={url}
-                      src={url}
-                      alt={`Foto ${idx + 1}`}
-                      className="object-cover h-[120px] w-auto rounded-lg border-2 border-[#BE895B]"
-                      style={{ maxWidth: '200px' }}
-                    />
+                  imageUrls.map((url, i) => (
+                    <div key={url} className="w-[120px] h-[120px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center overflow-hidden">
+                      <img
+                        src={url}
+                        alt={`Foto ${i + 1}`}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
                   ))
                 )}
               </div>

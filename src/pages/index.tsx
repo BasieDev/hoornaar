@@ -70,7 +70,11 @@ export default function Home() {
         <div className="mt-4 flex flex-col space-y-6 w-full mb-10">
           {signaleringen.map((sig, idx) => (
             <div key={sig.id} className="flex flex-col w-full bg-[#F0DFCD] rounded-2xl p-4 ">
-              <div className="text-[#BE895B] text-[26px]">
+              <div
+                className="text-[#BE895B] text-[26px] cursor-pointer hover:underline"
+                onClick={() => window.location.href = `/add-conclusion/${sig.id}`}
+                title={`Bekijk signalering #${sig.id}`}
+              >
                 Signalering #{sig.id}{" "}
                 <span className="text-[21px] text-[#FAC131] ml-4">{typeMap[sig.type] || 'Onbekend'}</span>
               </div>
