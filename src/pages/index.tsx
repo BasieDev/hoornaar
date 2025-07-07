@@ -22,11 +22,10 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [signaleringen, setSignaleringen] = useState<any[]>([]);
   const typeMap: Record<number, string> = {
-    0: "Onbekend",
-    1: "Bij",
-    2: "Hoornaar",
-    3: "Bijenkorf",
-    4: "Wespennest"
+    0: "Bij",
+    1: "Hoornaar",
+    2: "Bijenkorf",
+    3: "Wespennest"
   };
 
   const weatherCodes: Record<number, string> = {

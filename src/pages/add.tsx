@@ -71,10 +71,10 @@ export default function Add() {
     }
     const formData = new FormData(e.currentTarget);
     const typeMap: Record<string, number> = {
-      "Bij": 1,
-      "Hoornaar": 2,
-      "Bijenkorf": 3,
-      "Wespennest": 4,
+      "Bij": 0,
+      "Hoornaar": 1,
+      "Bijenkorf": 2,
+      "Wespennest": 3,
     };
 
     if (!navigator.geolocation) {
