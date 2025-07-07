@@ -27,7 +27,6 @@ export default function OpenStreetMap() {
 
         fetch('https://localhost:7235/api/sighting/all?page=1&pageSize=100')
           .then(async (res) => {
-            // Defensive: check for non-OK and empty responses
             if (!res.ok) throw new Error('Network response was not ok');
             const text = await res.text();
             if (!text) throw new Error('Empty response');
@@ -43,9 +42,24 @@ export default function OpenStreetMap() {
               const lat = typeof sighting.latitude === 'number' ? sighting.latitude : null;
               const lng = typeof sighting.longitude === 'number' ? sighting.longitude : null;
               if (lat !== null && lng !== null) {
+                let color = '#FF8585';
+                switch (sighting.type) {
+                  case 1:
+                    color = '#9288FF';
+                    break;
+                  case 2:
+                    color = '#FF0000';
+                    break;
+                  case 3:
+                    color = '#1904FF';
+                    break;
+                  case 0:
+                  default:
+                    color = '#FFA500';
+                }
                 L.circleMarker([lat, lng], {
-                  color: 'orange',
-                  fillColor: 'orange',
+                  color,
+                  fillColor: color,
                   fillOpacity: 0.75,
                   radius: 8,
                 })
