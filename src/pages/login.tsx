@@ -29,7 +29,6 @@ export default function Login() {
     setError("");
     setSuccess(false);
     try {
-      // Send email as username in the payload
       const payload = {
         username: form.email,
         password: form.password
