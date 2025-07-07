@@ -26,9 +26,8 @@ export default function OpenStreetMap() {
           maxZoom: 19,
         }).addTo(mapInstanceRef.current);
 
-        // Lazy load all sightings, page by page
         let cancelled = false;
-        const pageSize = 1;
+        const pageSize = 15;
         let page = 1;
         let totalCount = 0;
         let loadedCount = 0;

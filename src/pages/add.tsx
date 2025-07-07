@@ -30,6 +30,13 @@ export default function Add() {
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
+    const invalidFiles = files.filter(
+      (file) => !["image/jpeg", "image/jpg"].includes(file.type)
+    );
+    if (invalidFiles.length > 0) {
+      setImageError("Alleen JPG/JPEG bestanden zijn toegestaan.");
+      return;
+    }
     if (images.length + files.length > 4) {
       setImageError("Je mag maximaal 4 foto's toevoegen.");
       return;
@@ -56,6 +63,10 @@ export default function Add() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (images.length === 0) {
+      setImageError("Je moet minimaal 1 JPG/JPEG foto toevoegen.");
+      return;
+    }
     const formData = new FormData(e.currentTarget);
     const typeMap: Record<string, number> = {
       "Bij": 1,

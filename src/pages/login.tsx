@@ -40,7 +40,12 @@ export default function Login() {
       });
       const text = await res.text();
       if (!res.ok) {
-        setError(`Login mislukt. Server response: ${text}`);
+        try {
+          const json = JSON.parse(text);
+          setError(json.detail || json.title || "Login mislukt.");
+        } catch {
+          setError(text || "Login mislukt.");
+        }
         return;
       }
       localStorage.setItem("token", text);

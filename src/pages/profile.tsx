@@ -23,6 +23,43 @@ export default function Profile() {
     place: "",
     date: ""
   });
+  // Delete sighting modal state
+  const [deleteSightingModal, setDeleteSightingModal] = useState<any>(null);
+  const [deletingSighting, setDeletingSighting] = useState(false);
+  const [deleteSightingError, setDeleteSightingError] = useState("");
+  const handleDeleteSighting = async () => {
+    if (!deleteSightingModal) return;
+    setDeletingSighting(true);
+    setDeleteSightingError("");
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`https://localhost:7235/api/sighting/delete/${deleteSightingModal.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+      if (!res.ok) {
+        let errorMsg = "Fout bij verwijderen";
+        try {
+          const errorData = await res.json();
+          if (errorData && errorData.errors) {
+            errorMsg = Object.values(errorData.errors).flat().join(" ");
+          } else if (errorData && errorData.message) {
+            errorMsg = errorData.message;
+          }
+        } catch {}
+        throw new Error(errorMsg);
+      }
+      setDeleteSightingModal(null);
+      await fetchSightings();
+    } catch (err: any) {
+      setDeleteSightingError(err.message || "Onbekende fout");
+    } finally {
+      setDeletingSighting(false);
+    }
+  };
   const [savingSighting, setSavingSighting] = useState(false);
   const [saveSightingError, setSaveSightingError] = useState("");
 
@@ -246,7 +283,6 @@ export default function Profile() {
                 </button>
                 <button
                   onClick={() => {
-                    // Initialize modal fields with current profile data
                     setEditUsername(profile?.username || "");
                     setEditFirstName(profile?.firstName || "");
                     setEditLastName(profile?.lastName || "");
@@ -337,11 +373,51 @@ export default function Profile() {
                         >
                           Wijzig signalering
                         </button>
+                        <button
+                          className="bg-red-500 hover:bg-red-700 text-white px-5 py-1 rounded-full transition"
+                          onClick={() => {
+                            setDeleteSightingModal(sig);
+                            setDeleteSightingError("");
+                          }}
+                        >
+                          Verwijder
+                        </button>
                       </div>
                     </div>
                   );
                 })
               )}
+      {/* Delete sighting confirmation modal */}
+      {deleteSightingModal && (
+        <div className="fixed inset-0 bg-transparant bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-[#F0DFCD] rounded-2xl p-6 w-[350px] max-h-[80vh] overflow-y-auto shadow-lg relative">
+            <h2 className="text-xl mb-4 text-[#A25714]">Weet je zeker dat je deze signalering wilt verwijderen?</h2>
+            <button
+              onClick={() => setDeleteSightingModal(null)}
+              className="absolute top-3 right-3 text-[#FBD064] hover:text-[#FAC131]"
+            >
+              ✕
+            </button>
+            {deleteSightingError && <div className="text-red-500 text-sm mb-2">{deleteSightingError}</div>}
+            <div className="flex justify-end mt-4 gap-2">
+              <button
+                className="bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
+                disabled={deletingSighting}
+                onClick={() => setDeleteSightingModal(null)}
+              >
+                Annuleren
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white px-6 py-2 rounded-full transition"
+                disabled={deletingSighting}
+                onClick={handleDeleteSighting}
+              >
+                {deletingSighting ? "Verwijderen..." : "Verwijder"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
               <div className="flex space-x-4 w-full justify-right">
                 <button
                   onClick={() => setActive("profiel")}
