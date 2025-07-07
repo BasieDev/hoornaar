@@ -400,10 +400,10 @@ export default function Profile() {
               ) : (
                 Array.isArray(signaleringen) && signaleringen.map((sig: any, idx: number) => {
                   const typeLabels: Record<number, string> = {
-                    1: "Bij",
-                    2: "Hoornaar",
-                    3: "Bijenkorf",
-                    4: "Wespennest"
+                    0: "Bij",
+                    1: "Hoornaar",
+                    2: "Bijenkorf",
+                    3: "Wespennest"
                   };
                   const typeLabel = typeLabels[sig.type] || sig.type || "-";
                   const location = sig.place || sig.location || sig.Location || "-";
@@ -692,10 +692,10 @@ export default function Profile() {
                   onChange={e => setEditSightingData({ ...editSightingData, type: Number(e.target.value) })}
                   className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 w-full"
                 >
-                  <option value={1}>Bij</option>
-                  <option value={2}>Hoornaar</option>
-                  <option value={3}>Bijenkorf</option>
-                  <option value={4}>Wespennest</option>
+                  <option value={0}>Bij</option>
+                  <option value={1}>Hoornaar</option>
+                  <option value={2}>Bijenkorf</option>
+                  <option value={3}>Wespennest</option>
                 </select>
               </label>
               <label className="text-[#BE895B]">Plant:
