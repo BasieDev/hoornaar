@@ -12,6 +12,7 @@ export default function Add() {
   const [images, setImages] = useState<File[]>([]);
   const [imageError, setImageError] = useState("");
   const [currentImage, setCurrentImage] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -63,6 +64,7 @@ export default function Add() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError(null);
     if (images.length === 0) {
       setImageError("Je moet minimaal 1 JPG/JPEG foto toevoegen.");
       return;
@@ -104,6 +106,21 @@ export default function Add() {
             },
             body: JSON.stringify(payload),
           });
+
+          if (!response.ok) {
+            let errorMsg = "Fout bij opslaan";
+            try {
+              const errorData = await response.json();
+              if (errorData && errorData.errors) {
+                errorMsg = Object.values(errorData.errors)
+                  .flat()
+                  .join(" ");
+              } else if (errorData && errorData.detail) {
+                errorMsg = errorData.detail;
+              }
+            } catch {}
+            throw new Error(errorMsg);
+          }
 
           let responseJson = null;
           try {
@@ -151,7 +168,7 @@ export default function Add() {
           }
 
         } catch (err: any) {
-          alert(`Er ging iets mis bij het versturen.\n${err?.message || err}`);
+          setError(err?.message || "Er ging iets mis bij het versturen.");
           console.error(err);
         }
       },
@@ -199,7 +216,6 @@ export default function Add() {
             <input
               type="text"
               name="locatie"
-              required
               className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
             />
           </div>
@@ -209,7 +225,6 @@ export default function Add() {
             <input
               type="date"
               name="datum"
-              required
               className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
             />
           </div>
@@ -219,7 +234,6 @@ export default function Add() {
             <input
               type="text"
               name="plant"
-              required
               className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
             />
           </div>
@@ -228,11 +242,12 @@ export default function Add() {
             <p className="text-[21px] text-[#BE895B]">Beschrijving:</p>
             <textarea
               name="beschrijving"
-              required minLength={20} maxLength={200}
               className="bg-[#EFEEEC] text-[#BE895B] rounded-2xl px-2 py-1 w-full"
               rows={4}
             />
           </div>
+
+          {error && <div className="text-red-600 mt-4">{error}</div>}
 
           <div className="flex flex-col space-y-2 mt-6 w-full relative">
             <img
