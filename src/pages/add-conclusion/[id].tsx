@@ -135,7 +135,7 @@ export default function AddConclusionPage() {
                 'Onbekend'
               }</p>
               <p className="text-[18px] text-[#BE895B] ">Locatie:</p>
-              <p className="text-[18px] text-[#BE895B] ">{sighting.place} ({sighting.latitude}, {sighting.longitude})</p>
+              <p className="text-[18px] text-[#BE895B] ">{sighting.place}</p>
               <p className="text-[18px] text-[#BE895B] ">Datum:</p>
                 <p className="text-[18px] text-[#BE895B] ">{new Date(sighting.date).toLocaleDateString()}</p>
               <p className="text-[18px] text-[#BE895B] ">Plant:</p>

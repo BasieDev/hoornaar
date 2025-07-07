@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 export default function OpenStreetMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -25,20 +26,25 @@ export default function OpenStreetMap() {
           maxZoom: 19,
         }).addTo(mapInstanceRef.current);
 
-        fetch('https://localhost:7235/api/sighting/all?page=1&pageSize=100')
-          .then(async (res) => {
+        // Lazy load all sightings, page by page
+        let cancelled = false;
+        const pageSize = 1;
+        let page = 1;
+        let totalCount = 0;
+        let loadedCount = 0;
+
+        const loadPage = async () => {
+          try {
+            const res = await fetch(`https://localhost:7235/api/sighting/all?page=${page}&pageSize=${pageSize}`);
             if (!res.ok) throw new Error('Network response was not ok');
             const text = await res.text();
             if (!text) throw new Error('Empty response');
-            try {
-              return JSON.parse(text);
-            } catch (e) {
-              throw new Error('Invalid JSON');
-            }
-          })
-          .then((data) => {
+            const data = JSON.parse(text);
+            if (cancelled) return;
+            totalCount = data.totalCount || 0;
             const sightings = Array.isArray(data?.sighting) ? data.sighting : [];
-            sightings.forEach((sighting: any) => {
+            loadedCount += sightings.length;
+            sightings.forEach((sighting) => {
               const lat = typeof sighting.latitude === 'number' ? sighting.latitude : null;
               const lng = typeof sighting.longitude === 'number' ? sighting.longitude : null;
               if (lat !== null && lng !== null) {
@@ -80,10 +86,22 @@ export default function OpenStreetMap() {
                   `);
               }
             });
-          })
-          .catch((err) => {
-            console.error('Failed to load sightings', err);
-          });
+            if (loadedCount < totalCount && sightings.length > 0) {
+              page++;
+              setTimeout(loadPage, 0); // schedule next page
+            } else {
+              setLoading(false);
+            }
+          } catch (err) {
+            if (!cancelled) {
+              setLoading(false);
+              console.error('Failed to load sightings', err);
+            }
+          }
+        };
+        loadPage();
+        // Cleanup
+        return () => { cancelled = true; };
       });
     }
 
@@ -95,5 +113,7 @@ export default function OpenStreetMap() {
     };
   }, []);
 
-  return <div ref={mapRef} className="h-full w-full rounded-md shadow-md min-h-[350px]"></div>;
+  return (
+    <div ref={mapRef} className="w-full h-full rounded-md shadow-md" style={{ minHeight: 0, margin: 0, padding: 0 }}></div>
+  );
 }
