@@ -29,7 +29,6 @@ export default function Home() {
     4: "Wespennest"
   };
 
-  // Weather code mapping (full set from /add-conclusion)
   const weatherCodes: Record<number, string> = {
     0: "Zonnig",
     1: "Voornamelijk zonnig",
