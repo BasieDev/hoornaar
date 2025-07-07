@@ -29,6 +29,38 @@ export default function Home() {
     4: "Wespennest"
   };
 
+  // Weather code mapping (full set from /add-conclusion)
+  const weatherCodes: Record<number, string> = {
+    0: "Zonnig",
+    1: "Voornamelijk zonnig",
+    2: "Gedeeltelijk bewolkt",
+    3: "Bewolkt",
+    45: "Mistig",
+    48: "Aanhoudende rijp-mist",
+    51: "Lichte motregen",
+    53: "Motregen",
+    55: "Zware motregen",
+    56: "Lichte onderkoelde motregen",
+    57: "Onderkoelde motregen",
+    61: "Lichte regen",
+    63: "Regen",
+    65: "Zware regen",
+    66: "Lichte onderkoelde regen",
+    67: "Onderkoelde regen",
+    71: "Lichte sneeuw",
+    73: "Sneeuw",
+    75: "Zware sneeuw",
+    77: "Sneeuwkorrels",
+    80: "Lichte buien",
+    81: "Buien",
+    82: "Zware buien",
+    85: "Lichte sneeuwbuien",
+    86: "Sneeuwbuien",
+    95: "Onweer",
+    96: "Licht onweer met hagel",
+    99: "Onweer met hagel"
+  };
+
   useEffect(() => {
     fetch("https://localhost:7235/api/sighting/all?page=1&pageSize=100")
       .then((res) => res.json())
@@ -94,7 +126,11 @@ export default function Home() {
                 </div>
                 <div className="grid grid-cols-[100px_1fr]">
                   <span>Weer:</span>
-                  <span className="text-[#FAC131]">{sig.weather ? `${sig.weather.temperature}°C (code ${sig.weather.code})` : ''}</span>
+                  <span className="text-[#FAC131]">
+                    {sig.weather && typeof sig.weather === 'object'
+                      ? `${sig.weather.temperature !== undefined ? `${sig.weather.temperature}°C - ` : ''}${weatherCodes[sig.weather.code] || sig.weather.code || 'Onbekend'}`
+                      : sig.weather || ''}
+                  </span>
                 </div>
                 <div>
                   <span>Beschrijving:</span> <br />
