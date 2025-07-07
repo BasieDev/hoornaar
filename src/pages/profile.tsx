@@ -140,8 +140,8 @@ export default function Profile() {
           const errorData = await res.json();
           if (errorData && errorData.errors) {
             errorMsg = Object.values(errorData.errors).flat().join(" ");
-          } else if (errorData && errorData.message) {
-            errorMsg = errorData.message;
+          } else if (errorData && errorData.detail) {
+            errorMsg = errorData.detail;
           }
         } catch {}
         throw new Error(errorMsg);
@@ -636,8 +636,8 @@ export default function Profile() {
                               errorMsg = Object.values(errorData.errors)
                                 .flat()
                                 .join(" ");
-                            } else if (errorData && errorData.message) {
-                              errorMsg = errorData.message;
+                            } else if (errorData && errorData.detail) {
+                              errorMsg = errorData.detail;
                             }
                           } catch {}
                           throw new Error(errorMsg);

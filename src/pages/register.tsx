@@ -41,11 +41,21 @@ export default function Register() {
             const text = await res.text();
 
             if (!res.ok) {
-                setError("Registratie mislukt.");
-                setDebug({ status: res.status, statusText: res.statusText, body: text });
+                try {
+                  const json = JSON.parse(text);
+              
+                  if (json.errors) {
+                    setError(json.errors);
+                  } 
+                  else {
+                    setError(json.detail || json.title || "Er is iets misgegaan.");
+                  }
+                } catch {
+                  setError(text || "Er is iets misgegaan.");
+                }
                 return;
-            }
-
+              }
+              
             localStorage.setItem("token", text);
             console.log("Token opgeslagen:", text);
             Router.push("/");
@@ -123,7 +133,22 @@ export default function Register() {
                             Registreer
                         </button>
                     </div>
-                    {error && <div className="text-red-600 mt-4">{error}</div>}
+                    {typeof error === "string" && (
+                        <div className="text-red-600 mt-4">{error}</div>
+                    )}
+
+                    {typeof error === "object" && (
+                      <div className="text-red-600 mt-4">
+                        {Object.entries(error).map(([field, messages]) => (
+                          <div key={field}>
+                            {(messages as string[]).map((msg, idx) => (
+                               <p key={idx}>{msg}</p>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     {success && <div className="text-green-600 mt-4">Registratie gelukt!</div>}
                 </form>
             </div>

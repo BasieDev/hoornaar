@@ -42,9 +42,15 @@ export default function Login() {
       if (!res.ok) {
         try {
           const json = JSON.parse(text);
-          setError(json.detail || json.title || "Login mislukt.");
+      
+          if (json.errors) {
+            setError(json.errors);
+          } 
+          else {
+            setError(json.detail || json.title || "Er is iets misgegaan.");
+          }
         } catch {
-          setError(text || "Login mislukt.");
+          setError(text || "Er is iets misgegaan.");
         }
         return;
       }
@@ -67,7 +73,6 @@ export default function Login() {
             <label className="text-xl ml-4" style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif' }}>E-mailadres</label>
             <input
               name="email"
-              type="email"
               value={form.email}
               onChange={handleChange}
               className="bg-[#F1DECD] p-2 text-xl text-black h-12 rounded-4xl"
@@ -88,7 +93,22 @@ export default function Login() {
           <div style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif' }} className="mx-auto ml-4">
             Nog geen account? <a href="/register" className="text-[#F1DECD]" >Klik hier.</a>
           </div>
-          {error && <div className="text-red-600 mt-4">{error}</div>}
+          {typeof error === "string" && (
+            <div className="text-red-600 mt-4">{error}</div>
+          )}
+
+          {typeof error === "object" && (
+            <div className="text-red-600 mt-4">
+              {Object.entries(error).map(([field, messages]) => (
+                <div key={field}>
+                  {(messages as string[]).map((msg, idx) => (
+                    <p key={idx}>{msg}</p>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+
           {success && <div className="text-green-600 mt-4">Login gelukt!</div>}
           <div>
             <button type="submit" className="bg-[#FBD064] text-[#fffff] text-xl h-12 w-36 mt-8 rounded-4xl float-right" style={{ fontFamily: 'Londrina, Arial, Helvetica, sans-serif', width: '50%' }}>
