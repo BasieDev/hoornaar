@@ -23,7 +23,7 @@ export default function Profile() {
     place: "",
     date: ""
   });
-  // Delete sighting modal state
+
   const [deleteSightingModal, setDeleteSightingModal] = useState<any>(null);
   const [deletingSighting, setDeletingSighting] = useState(false);
   const [deleteSightingError, setDeleteSightingError] = useState("");
@@ -146,8 +146,45 @@ export default function Profile() {
 
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [deleteAccountError, setDeleteAccountError] = useState("");
 
-  // Editable profile fields for the modal
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    setDeleteAccountError("");
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch("https://localhost:7235/api/auth/delete", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) {
+        let errorMsg = "Fout bij verwijderen";
+        try {
+          const errorData = await res.json();
+          if (errorData && errorData.errors) {
+            window.location.href = "/logout";
+            errorMsg = Object.values(errorData.errors).flat().join(" ");
+          } else if (errorData && errorData.message) {
+            window.location.href = "/logout";
+            errorMsg = errorData.message;
+          }
+        } catch {}
+        throw new Error(errorMsg);
+      }
+      window.location.href = "/logout";
+    } catch (err: any) {
+        window.location.href = "/logout";
+      setDeleteAccountError(err.message || "Onbekende fout");
+    } finally {
+        window.location.href = "/logout";
+      setDeletingAccount(false);
+    }
+  };
+
   const [editUsername, setEditUsername] = useState("");
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
@@ -294,10 +331,50 @@ export default function Profile() {
                 >
                   Wijzig
                 </button>
-
+                <button
+                  onClick={() => {
+                    setShowDeleteAccountModal(true);
+                    setDeleteAccountError("");
+                  }}
+                  className="bg-red-500 hover:bg-red-700 text-white px-7 py-2 rounded-full transition"
+                >
+                  Verwijder account
+                </button>
               </div>
             </div>
           )}
+      {/* Delete account confirmation modal */}
+      {showDeleteAccountModal && (
+        <div className="fixed inset-0 bg-transparant bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-[#F0DFCD] rounded-2xl p-6 w-[350px] max-h-[80vh] overflow-y-auto shadow-lg relative">
+            <h2 className="text-xl mb-4 text-[#A25714]">Weet je zeker dat je je account wilt verwijderen?</h2>
+            <p className="text-[#BE895B] mb-4">Je wordt direct uitgelogd. Als je niet opnieuw inlogt binnen twee weken, wordt je account definitief verwijderd.</p>
+            <button
+              onClick={() => setShowDeleteAccountModal(false)}
+              className="absolute top-3 right-3 text-[#FBD064] hover:text-[#FAC131]"
+            >
+              ✕
+            </button>
+            {deleteAccountError && <div className="text-red-500 text-sm mb-2">{deleteAccountError}</div>}
+            <div className="flex justify-end mt-4 gap-2">
+              <button
+                className="bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
+                disabled={deletingAccount}
+                onClick={() => setShowDeleteAccountModal(false)}
+              >
+                Annuleren
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white px-6 py-2 rounded-full transition"
+                disabled={deletingAccount}
+                onClick={handleDeleteAccount}
+              >
+                {deletingAccount ? "Verwijderen..." : "Verwijder account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
         </div>
         {/* API DATA */}

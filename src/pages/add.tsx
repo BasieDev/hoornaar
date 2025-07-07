@@ -8,7 +8,7 @@ import SectionTitle from "@/components/sectiontitle";
 import { useRouter } from "next/navigation";
 
 export default function Add() {
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState("Bij");
   const [images, setImages] = useState<File[]>([]);
   const [imageError, setImageError] = useState("");
   const [currentImage, setCurrentImage] = useState(0);
@@ -96,8 +96,6 @@ export default function Add() {
 
         try {
           const token = localStorage.getItem("token");
-          console.log("Payload:", payload);
-          console.log(token)
           const response = await fetch("https://localhost:7235/api/sighting/create", {
             method: "POST",
             headers: {
@@ -107,15 +105,12 @@ export default function Add() {
             body: JSON.stringify(payload),
           });
 
-          let responseText = await response.clone().text();
           let responseJson = null;
-          try { 
-            responseJson = JSON.parse(responseText);
-          } catch {}
-          if (responseJson) {
-            console.log("API response (parsed JSON):", responseJson);
-          } else {
-            console.log("API response (raw text):", responseText);
+          try {
+            responseJson = await response.clone().json();
+          } catch {
+            const text = await response.clone().text();
+            console.log("API response (raw text):", text);
           }
 
           let locationUrl = null;
@@ -124,11 +119,7 @@ export default function Add() {
               ? responseJson.uploadUrlImage
               : `https://localhost:7235${responseJson.uploadUrlImage}`;
           }
-          console.log("Image upload URL from JSON:", locationUrl);
           if (locationUrl && images.length > 0) {
-            // Log the exact URL and image names that will be posted
-            console.log("Uploading images to:", locationUrl);
-            console.log("Image file names:", images.map(img => img.name));
             const imageFormData = new FormData();
             images.forEach((img) => {
               imageFormData.append("images", img);
@@ -143,29 +134,9 @@ export default function Add() {
                 headers: imageUploadHeaders,
                 body: imageFormData,
               });
-              let imageUploadText = await imageUploadResponse.clone().text();
-              let imageUploadJson = null;
-              try {
-                imageUploadJson = JSON.parse(imageUploadText);
-              } catch {}
-              if (!imageUploadResponse.ok) {
-                console.error("Image upload failed:", {
-                  status: imageUploadResponse.status,
-                  statusText: imageUploadResponse.statusText,
-                  body: imageUploadText,
-                  url: locationUrl
-                });
-              }
-              if (imageUploadJson) {
-                console.log("Image upload response (parsed JSON):", imageUploadJson);
-              } else {
-                console.log("Image upload response (raw text):", imageUploadText);
-              }
             } catch (err) {
               console.error("Image upload threw an error:", err);
             }
-          } else {
-            console.log("No images to upload or image upload URL not found in JSON.");
           }
 
           if (e.currentTarget) e.currentTarget.reset();
@@ -174,7 +145,9 @@ export default function Add() {
           setCurrentImage(0);
 
           if (responseJson && responseJson.id) {
-            router.push(`/add-conclusion/${responseJson.id}`);
+            window.location.href = `/add-conclusion/${responseJson.id}`;
+          } else {
+            window.location.href = "/map";
           }
 
         } catch (err: any) {
