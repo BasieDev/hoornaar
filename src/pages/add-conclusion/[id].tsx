@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-// Mapping of weather codes to Dutch descriptions (daytime only)
 const weatherCodeDescriptions: Record<number, string> = {
   0: "Zonnig",
   1: "Voornamelijk zonnig",
@@ -76,14 +75,13 @@ interface Sighting {
 export default function AddConclusionPage() {
   const router = useRouter();
   const [id, setId] = useState<string | undefined>(undefined);
-  const title = "Jouw signalering";
   const [sighting, setSighting] = useState<Sighting | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [currentImage, setCurrentImage] = useState(0);
+  let title = sighting ? `Signalering #${sighting.id}` : '';
 
-  // Get id from the URL path (works for /add-conclusion/[id])
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const parts = window.location.pathname.split('/');
@@ -129,11 +127,17 @@ export default function AddConclusionPage() {
           <div className="space-y-6">
             <div className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-2 max-w-full ">
               <p className="text-[18px] text-[#BE895B] ">Een:</p>
-              <p className="text-[18px] text-[#BE895B] ">{sighting.type}</p>
+              <p className="text-[18px] text-[#BE895B] ">{
+                sighting.type === 1 ? 'Bij' :
+                sighting.type === 2 ? 'Hoornaar' :
+                sighting.type === 3 ? 'Bijenkorf' :
+                sighting.type === 4 ? 'Wespennest' :
+                'Onbekend'
+              }</p>
               <p className="text-[18px] text-[#BE895B] ">Locatie:</p>
               <p className="text-[18px] text-[#BE895B] ">{sighting.place} ({sighting.latitude}, {sighting.longitude})</p>
               <p className="text-[18px] text-[#BE895B] ">Datum:</p>
-              <p className="text-[18px] text-[#BE895B] ">{new Date(sighting.date).toLocaleString()}</p>
+                <p className="text-[18px] text-[#BE895B] ">{new Date(sighting.date).toLocaleDateString()}</p>
               <p className="text-[18px] text-[#BE895B] ">Plant:</p>
               <p className="text-[18px] text-[#BE895B] ">{sighting.flower}</p>
               <p className="text-[18px] text-[#BE895B] ">Weer:</p>

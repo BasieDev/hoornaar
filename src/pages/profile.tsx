@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/navbar";
 import LogoSvg from "@/components/logo";
 import SectionTitle from "@/components/sectiontitle";
 import Container from "@/components/container";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
 
 export default function Profile() {
   const [signaleringen, setSignaleringen] = useState([]);
@@ -14,16 +12,47 @@ export default function Profile() {
   const [active, setActive] = useState("profiel");
   const [showModal, setShowModal] = useState(false);
 
+  const [profile, setProfile] = useState<any>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+
+  // Editable profile fields for the modal
+  const [editUsername, setEditUsername] = useState("");
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+
   const [newType, setNewType] = useState("");
   const options = ["Bij", "Hoornaar", "Bijenkorf", "Wespennest"];
   const router = useRouter();
 
   useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/login";
-        }
-    }, []);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    const fetchProfile = async () => {
+      try {
+        setLoadingProfile(true);
+        const res = await fetch("https://localhost:7235/api/profile/me", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch profile info");
+        const data = await res.json();
+        setProfile(data);
+      } catch (err) {
+        setProfile(null);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const title =
     active === "profiel"
@@ -99,10 +128,18 @@ export default function Profile() {
           {active === "gegevens" && (
             <div className="flex flex-col space-y-1 w-full">
               <div>
-                <p className="text-[21px] text-[#BE895B] mb-2">Bijnaam:</p>
-                <p className="text-[21px] text-[#BE895B] mb-2">E-mail:</p>
-                <p className="text-[21px] text-[#BE895B] mb-2">Voornaam:</p>
-                <p className="text-[21px] text-[#BE895B] mb-2">Achternaam:</p>
+                {loadingProfile ? (
+                  <p className="text-[21px] text-[#BE895B] mb-2">Laden...</p>
+                ) : profile ? (
+                  <>
+                    <p className="text-[21px] text-[#BE895B] mb-2">Gebruikersnaam: {profile.username || "-"}</p>
+                    <p className="text-[21px] text-[#BE895B] mb-2">E-mail: {profile.email || "-"}</p>
+                    <p className="text-[21px] text-[#BE895B] mb-2">Voornaam: {profile.firstName || "-"}</p>
+                    <p className="text-[21px] text-[#BE895B] mb-2">Achternaam: {profile.lastName || "-"}</p>
+                  </>
+                ) : (
+                  <p className="text-[21px] text-[#BE895B] mb-2">Kon profiel niet laden.</p>
+                )}
               </div>
               <div className="flex flex-wrap gap-4 w-full justify-between my-4">
                 <button
@@ -112,7 +149,15 @@ export default function Profile() {
                   Terug
                 </button>
                 <button
-                  onClick={() => setShowModal(true)}
+                  onClick={() => {
+                    // Initialize modal fields with current profile data
+                    setEditUsername(profile?.username || "");
+                    setEditFirstName(profile?.firstName || "");
+                    setEditLastName(profile?.lastName || "");
+                    setEditEmail(profile?.email || "");
+                    setSaveError("");
+                    setShowModal(true);
+                  }}
                   className="bg-[#FBD064] hover:bg-[#A25714] text-white px-7 py-2 rounded-full transition"
                 >
                   Wijzig
@@ -241,7 +286,9 @@ export default function Profile() {
                   <p className="text-[18px] text-[#BE895B] w-[100px]">Bijnaam:</p>
                   <input
                     type="text"
-                    name="new-nickname"
+                    name="new-username"
+                    value={editUsername}
+                    onChange={e => setEditUsername(e.target.value)}
                     className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
                   />
                 </div>
@@ -251,6 +298,8 @@ export default function Profile() {
                   <input
                     type="text"
                     name="new-email"
+                    value={editEmail}
+                    onChange={e => setEditEmail(e.target.value)}
                     className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
                   />
                 </div>
@@ -260,6 +309,8 @@ export default function Profile() {
                   <input
                     type="text"
                     name="new-firstname"
+                    value={editFirstName}
+                    onChange={e => setEditFirstName(e.target.value)}
                     className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
                   />
                 </div>
@@ -269,9 +320,12 @@ export default function Profile() {
                   <input
                     type="text"
                     name="new-lastname"
+                    value={editLastName}
+                    onChange={e => setEditLastName(e.target.value)}
                     className="bg-[#EFEEEC] text-[#BE895B] rounded-4xl px-2 flex-1"
                   />
                 </div>
+                {saveError && <p className="text-red-500 text-sm mb-2">{saveError}</p>}
               </>
             ) : (
               <>
@@ -340,8 +394,45 @@ export default function Profile() {
             )}
 
             <div className="flex justify-end mt-4">
-              <button className="bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition">
-                Opslaan
+              <button
+                className="bg-[#FBD064] hover:bg-[#A25714] text-white px-6 py-2 rounded-full transition"
+                disabled={saving}
+                onClick={async () => {
+                  setSaving(true);
+                  setSaveError("");
+                  const token = localStorage.getItem("token");
+                  try {
+                    const res = await fetch("https://localhost:7235/api/profile/me/update", {
+                      method: "PUT",
+                      headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                      },
+                      body: JSON.stringify({
+                        username: editUsername,
+                        firstName: editFirstName,
+                        lastName: editLastName,
+                        email: editEmail,
+                      }),
+                    });
+                    if (!res.ok) throw new Error("Fout bij opslaan");
+                    // Refresh profile info
+                    setProfile({
+                      ...profile,
+                      username: editUsername,
+                      firstName: editFirstName,
+                      lastName: editLastName,
+                      email: editEmail,
+                    });
+                    setShowModal(false);
+                  } catch (err: any) {
+                    setSaveError(err.message || "Onbekende fout");
+                  } finally {
+                    setSaving(false);
+                  }
+                }}
+              >
+                {saving ? "Opslaan..." : "Opslaan"}
               </button>
             </div>
           </div>

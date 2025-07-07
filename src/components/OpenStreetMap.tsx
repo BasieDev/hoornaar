@@ -17,7 +17,9 @@ export default function OpenStreetMap() {
           mapInstanceRef.current = null;
         }
 
-        mapInstanceRef.current = L.map(mapRef.current).setView([52.2, 5.3], 7);
+        mapInstanceRef.current = L.map(mapRef.current, {
+          zoomControl: false,
+        }).setView([52.2, 5.3], 7);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors',
           maxZoom: 19,

@@ -71,7 +71,7 @@ export default function Home() {
           {signaleringen.map((sig, idx) => (
             <div key={sig.id} className="flex flex-col w-full bg-[#F0DFCD] rounded-2xl p-4 ">
               <div className="text-[#BE895B] text-[26px]">
-                Signalering {sig.id}{" "}
+                Signalering #{sig.id}{" "}
                 <span className="text-[21px] text-[#FAC131] ml-4">{typeMap[sig.type] || 'Onbekend'}</span>
               </div>
               <div className="mb-[6px] h-[2px] w-full bg-white rounded-sm" />
