@@ -162,7 +162,7 @@ export default function AddConclusionPage() {
                 alt="Bij icoon"
                 className="w-6 h-5 absolute left-[-16px] top-[-12px]"
               />
-              <p className="text-[21px] text-[#BE895B]">Bekijk jouw foto's:</p>
+              <p className="text-[21px] text-[#BE895B]">Foto's:</p>
               <div className="w-full min-h-[120px] bg-[#E3D8D8] rounded-2xl flex flex-wrap items-center justify-center gap-2 p-2 relative overflow-x-auto">
                 {imageUrls.length === 0 ? (
                   <span className="text-[#BE895B] text-center">Geen foto's gevonden</span>

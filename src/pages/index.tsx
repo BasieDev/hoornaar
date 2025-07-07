@@ -137,7 +137,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex flex-col space-y-2 mt-10 w-full relative">
-                <p className="text-[21px] text-[#BE895B]">Bekijk jouw foto's:</p>
+                <p className="text-[21px] text-[#BE895B]">Foto's:</p>
                 <div className="w-full h-[250px] bg-[#E3D8D8] rounded-2xl flex items-center justify-center relative overflow-hidden">
                   {sig.images && sig.images.length > 0 ? (
                     <div className="flex w-full h-full overflow-x-auto gap-2">
