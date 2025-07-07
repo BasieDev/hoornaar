@@ -415,7 +415,20 @@ export default function Profile() {
                         email: editEmail,
                       }),
                     });
-                    if (!res.ok) throw new Error("Fout bij opslaan");
+                    if (!res.ok) {
+                      let errorMsg = "Fout bij opslaan";
+                      try {
+                        const errorData = await res.json();
+                        if (errorData && errorData.errors) {
+                          errorMsg = Object.values(errorData.errors)
+                            .flat()
+                            .join(" ");
+                        } else if (errorData && errorData.message) {
+                          errorMsg = errorData.message;
+                        }
+                      } catch {}
+                      throw new Error(errorMsg);
+                    }
                     // Refresh profile info
                     setProfile({
                       ...profile,
