@@ -32,7 +32,7 @@ export default function Register() {
         setSuccess(false);
         setDebug(null);
         try {
-            const res = await fetch("https://localhost:7235/api/auth/register", {
+            const res = await fetch("https:87.253.137.23:7235/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form)
