@@ -25,7 +25,11 @@ export default function Add() {
 
   useEffect(() => {
     return () => {
-      images.forEach((img) => URL.revokeObjectURL(img));
+      images.forEach((img) => {
+        if (typeof img !== "string") {
+          URL.revokeObjectURL(URL.createObjectURL(img));
+        }
+      });
     };
   }, [images]);
 

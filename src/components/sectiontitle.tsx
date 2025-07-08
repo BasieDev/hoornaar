@@ -1,4 +1,10 @@
-export default function SectionTitle({ title }) {
+import { ReactNode } from "react";
+
+interface SectionTitleProps {
+  title: ReactNode;
+}
+
+export default function SectionTitle({ title }: SectionTitleProps) {
   return (
     <div className="relative w-fit mt-18 ">
       <div className="flex items-center justify-center gap-2">

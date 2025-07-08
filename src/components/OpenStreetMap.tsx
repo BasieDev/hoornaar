@@ -43,7 +43,7 @@ export default function OpenStreetMap() {
             totalCount = data.totalCount || 0;
             const sightings = Array.isArray(data?.sighting) ? data.sighting : [];
             loadedCount += sightings.length;
-            sightings.forEach((sighting) => {
+            sightings.forEach((sighting: any) => {
               const lat = typeof sighting.latitude === 'number' ? sighting.latitude : null;
               const lng = typeof sighting.longitude === 'number' ? sighting.longitude : null;
               if (lat !== null && lng !== null) {
