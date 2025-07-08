@@ -33,7 +33,7 @@ export default function Login() {
         username: form.email,
         password: form.password
       };
-      const res = await fetch("https://localhost:7235/api/auth/Login", {
+      const res = await fetch("https://87.253.137.23:7235/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
